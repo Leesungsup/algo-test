@@ -1,3 +1,19 @@
+from collections import deque
+def solution4(prices):
+    answer=[]
+    q=deque(prices)
+    while q:
+        x=q.popleft()
+        count=0
+        for i in q:
+            count+=1
+            if x>i:
+                break
+        answer.append(count)
+    print(answer)
+    return answer
+prices=list(map(int,input().split()))
+solution4(prices)
 def solution3(bridge_length, weight, truck_weights):
     answer=0
     time=0
