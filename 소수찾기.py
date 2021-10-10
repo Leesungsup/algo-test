@@ -15,7 +15,7 @@ def solution(numbers):
     answer = []
     for k in range(1, len(numbers)+1):
         perlist = list(map(''.join, permutations(list(numbers), k)))
-        for i in list(set(perlist)):
+        for i in perlist:
             if check(int(i)):
                 answer.append(int(i))
 
