@@ -40,3 +40,26 @@ for i in range(n):
         if dfs(i,j)==True:
             count+=1
 print(count)
+n,m,k,x=map(int,input().split())
+d=[0]*(n+1)
+graph=[[] for _ in range(n+1)]
+for i in range(n):
+    a,b=map(int,input().split())
+    graph[a].append(b)
+def bfs(x):
+    q=[]
+    q=deque()
+    q.append(x)
+    while q:
+        x=q.popleft()
+        for i in graph[x]:
+            if d[i]==0:
+                d[i]=d[x]+1
+                q.append(i)
+check=False
+for i in range(n+1):
+    if d[i]==k:
+        check=True
+        print(i,end='')
+if check==False:
+    print("-1")
