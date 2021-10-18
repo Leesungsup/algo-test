@@ -46,4 +46,4 @@ def dfs(count):
 dfs(0)
 
 print(result)
-//x축 y축 조심할 것! append제외하고 리스트 컴프리션 필요!
+#x축 y축 조심할 것! append제외하고 리스트 컴프리션 필요!
