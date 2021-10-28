@@ -13,7 +13,7 @@ def solution(genres,plays):
         else:
             if plays[graph[d[g]][0]]<plays[i]:
                 graph[d[g]][0],graph[d[g]][1]=i,graph[d[g]][0]
-            elif plays[graph[d[g]][1]]<play[i]:
+            elif plays[graph[d[g]][1]]<plays[i]:
                 graph[d[g]][1]=i
     for i in d:
         graph[d[i]]=sorted(graph[d[i]],key=lambda x:plays[x],reverse=True)
