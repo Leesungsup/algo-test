@@ -47,3 +47,19 @@ def solution(array):
 array=list(map(int,input().split()))
 commands=list(map(int,input().split()))
 solutions(array)
+def solution1(array,commands):
+    answer=[]
+    for i in commands:
+        array1=array[i[0]-1:i[1]]
+        array1.sort()
+        answer.append(array1[i[2]-1])
+    print(answer)
+    return answer
+def solution1(numbers):
+    answer=''
+    array1=[]
+    array=list(map(str,numbers))
+    array1=sorted(array,key=lambda x:x*3, reverse=True)
+    answer=''.join(array1)
+    print(answer)
+    return answer

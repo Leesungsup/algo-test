@@ -1,4 +1,23 @@
 from collections import deque
+def solution5(progress,speeds):
+    answer=[]
+    q=deque(progress)
+    s=deque(speeds)
+    time=0
+    count=0
+    while q:
+        time+=1
+        for i in range(progress):
+            if q[0]+speeds[0]*time>=100:
+                count+=1
+                q.popleft()
+                s.popleft()
+            else:
+                if count>0:
+                    answer.append(count)
+                    count=0
+            time+=1
+    return answer
 def solution4(prices):
     answer=[]
     q=deque(prices)
