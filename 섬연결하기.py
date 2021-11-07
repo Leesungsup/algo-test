@@ -1,7 +1,7 @@
 import heapq
 def prim(graph,start_node,visited):
     total=0
-    visited[start_node]
+    visited[start_node]=1
     candidate=graph[start_node]
     heapq.heapify(candidate)
     mst=[]
