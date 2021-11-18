@@ -12,4 +12,19 @@ def solution(number, k):
     answer=d
     print(answer)
     return answer
+def solution1(number,k):
+    answer=''
+    numbers=list(number)
+    stack=[]
+    for i in numbers:
+        if not stack:
+            stack.append(i)
+        if k>0:
+            while stack[-1]<i:
+                stack.pop()
+                k-=1
+                if not stack and k<=0:
+                    break
+        stack.append(i)
+    return answer
 solution("1924",2)
