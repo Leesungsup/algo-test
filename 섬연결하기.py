@@ -29,6 +29,7 @@ def prim1(graph,start_node,visited):
     mst=[]
     visited[start_node]=0
     candidate=graph[start_node]
+    heapq.heapify(candidate)
     while candidate:
         weight,u,v=heapq.heappop(candidate)
         if visited[v]==0:

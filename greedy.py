@@ -1,28 +1,28 @@
 import heapq
 def prim(graph,start_node,visited):
     visited[start_node]=1
-    total=0
+    q=graph[start_node]
+    heapq.heapify(q)
     mst=[]
-    candidate=graph[start_node]
-    heapq.heapify(candidate)
-    while candidate:
-        dist,u,v=heapq.heappop(candidate)
+    total=0
+    while q:
+        weight,u,v=heapq.heappop(q)
         if visited[v]==0:
-            total+=dist
             visited[v]=1
             mst.append((u,v))
+            total+=weight
             for i in graph[v]:
                 if visited[i[2]]==0:
-                    heapq.heappush(candidate,i)
+                    heapq.heappush(q,i)
     return total
-def solution3(n,costs):
+def solution4(n,costs):
     answer=0
+    visited=[0]*(n+1)
     graph=[[] for _ in range(n+1)]
     for i in costs:
-        graph[i[0]].append((i[2],i[0]))
-        graph[i[1]].append((i[2],i[0]))
-    visited=[0]*(n+1)
-    answer=prim(graph,0,visited)
+        graph[i[0]].append((i[2],i[0],i[1]))
+        graph[i[1]].append((i[2],i[1],i[0]))
+    prim(graph,0,visited)
     return answer
 def solution2(people,limit):
     answer=0

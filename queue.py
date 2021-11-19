@@ -107,3 +107,38 @@ def solution1(progress,speeds):
 progress=list(map(int,input().split()))
 speeds=list(map(int,input().split()))
 solution1(progress,speeds)
+def solution5(bridge_length, weight, truck_weights):
+    answer=0
+    q=deque()
+    truck=deque(truck_weights)
+    for i in bridge_length:
+        q.append(0)
+    while truck:
+        q.popleft()
+        answer+=1
+        if sum(q)+truck[0]<weight:
+            q.append(truck.popleft())
+        else:
+            q.append(0)
+    return answer
+def solution6(progress,speeds):
+    answer=[]
+    s=deque()
+    q=deque()
+    for i in progress:
+        q.append(i)
+    for j in speeds:
+        s.append(j)
+    time=1
+    count=0
+    while q:
+        if (q[0]+(s[0]*time))>=100:
+            q.popleft()
+            s.popleft()
+            count+=1
+        else:
+            answer.append(count)
+            count=0
+        time+=1
+    answer.append(count)
+    return answer
