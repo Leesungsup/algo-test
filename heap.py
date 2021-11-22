@@ -1,4 +1,23 @@
 import heapq
+INF=int(1e9)
+def solution2():
+    n,m=map(int,input().split())
+    graph=[[] for _ in range(n+1)]
+    dist=[INF]*(n+1)
+    for i in range(n):
+        a,b,c=map(int,input().split())
+        graph[a].append((b,c))
+    q=[]
+    dist[0]=0
+    heapq.heappush(q,(0,0))
+    while q:
+        d,now=heapq.heappop(q)
+        if dist[now]<d:
+            continue
+        for i in graph[now]:
+            if dist[i[0]]>d+i[1]:
+                dist[i[0]]=d+i[1]
+                heapq.heappush(q,(d+i[1],i[0]))
 def solution1(jobs):
     answer=0
     now=0
