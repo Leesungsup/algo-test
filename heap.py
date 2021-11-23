@@ -1,5 +1,27 @@
 import heapq
 INF=int(1e9)
+def prim(graph,start,visited):
+    mst=[]
+    q=[]
+    visited[start]=1
+    heapq.heappush(q,(graph[start]))
+    while q:
+        d,n,v=heapq.heappop(q)
+        if visited[v]==1:
+            continue
+        else:
+            visited[v]=1
+            mst.append((n,v))
+            for i in graph[v]:
+                if visited[i[2]]==0:
+                    heapq.heappush(q,(i))
+def solution3(n,costs):
+    visited=[0]*(n+1)
+    graph=[[] for _ in range(n+1)]
+    for i in costs:
+        graph[i[0]].append((i[2],i[0],i[1]))
+        graph[i[1]].append((i[2],i[1],i[0]))
+    prim(graph,0,visited)
 def solution2():
     n,m=map(int,input().split())
     graph=[[] for _ in range(n+1)]
