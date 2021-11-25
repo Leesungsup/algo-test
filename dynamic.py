@@ -15,3 +15,14 @@ def solution(m,n,puddles):
     answer=map[i][j]
     return answer
 solution(4,3,[[2, 2]])
+def solution1(triangle):
+    answer=0
+    n=len(triangle)
+    for i in range(1,n):
+        for j in range(1,i+1):
+            if j==0:
+                triangle[i][j]+=triangle[i-1][j]
+            elif j==i:
+                triangle[i][j]+=triangle[i-1][j-1]
+            else:
+                triangle+=max(triangle[i-1][j-1],triangle[i-1][j])
