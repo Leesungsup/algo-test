@@ -17,7 +17,7 @@ def solution2(genres,plays):
         for t in total_list:
             if t==genre_max[0]:
                 if len(total_list[t])>1:
-                    answer.append(totaltotal_list[t][0][1])
+                    answer.append(total_list[t][0][1])
                     answer.append(total_list[t][1][1])
                 else:
                     answer.append(total_list[t][0][1])
