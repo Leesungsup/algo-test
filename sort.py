@@ -31,6 +31,24 @@ def solutions(numbers):
     array=sorted(array,key=lambda x:x*3,reverse=True)
     answer=str(int(''.join(array)))
     print(answer)
+def solution2(numbers):
+    answer=''
+    array=list(map(str,numbers))
+    array=sorted(array,key=lambda x:x*3,reverse=True)
+    answer=str(int(''.join(array)))
+    print(answer)
+def solution4(array):
+    answer=[]
+    answer=sorted(array)
+    h=len(answer)
+    while True:
+        num=0
+        for i in answer:
+            if h<=i:
+                num+=1
+            if num>=h:
+                return h
+        h=h-1
 def solution(array):
     array1=[]
     array1=sorted(array)
