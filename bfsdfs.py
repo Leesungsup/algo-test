@@ -177,3 +177,81 @@ def solution4(tickets):
             stack.append(d[s].pop())
     answer.reverse()
     return answer
+from collections import deque
+def solution5(numbers,target):
+    answer=0
+    q=deque()
+    q.append((-numbers[0],0))
+    q.append((numbers[0],0))
+    n=len(numbers)
+    while q:
+        num,i=q.popleft()
+        if i-1==n:
+            if num==target:
+                answer+=1
+        else:
+            q.append((num+numbers[i+1],i+1))
+            q.append((num-numbers[i+1],i+1))
+    return answer
+def solution6(n,computers):
+    answer=0
+    for k in range(n):
+        for i in range(n):
+            for j in range(n):
+                if computers[i][j]==0:
+                    if computers[i][k]!=0 and computers[k][j]!=0:
+                        computers[i][j]=computers[i][k]+computers[k][j]
+    max=-987654321
+    for i in computers:
+        num=0
+        for j in i:
+            if j==0:
+                num+=1
+        if max<num:
+            max=num
+    answer=max
+    return answer
+def dfs(begin,target,words,visited):
+    num=0
+    stack=[begin]
+    while stack:
+        s=stack.pop()
+        if s==target:
+            return num
+        for w in range(len(words)):
+            if len([i for i in range(len[s[i]]) if s[i]!=words[w][i]])==1:
+                if visited[w]==1:
+                    continue
+                visited[w]=1
+                stack.append(words[w])
+        num+=1
+def solution3(begin,target,words):
+    answer=0
+    visited=[[] for _ in range(0,len(words))]
+    if target not in words:
+        return answer
+    else:
+        answer=dfs(begin,target,words,visited)
+    return answer
+def dfs1(begin,target,words,visited):
+    num=0
+    q=[begin]
+    while q:
+        s=q.pop()
+        if s==target:
+            return num
+        for w in range(len(words)):
+            if len([i for i in range(len(s)) if s[i]!=words[w][i]])==1:
+                if visited[w]==1:
+                    continue
+                visited[w]=1
+                q.append(words[w])
+        num+=1
+
+def solution7(begin,target,words):
+    answer=0
+    visited=[[] for i in range(0,len(words))]
+    if target not in words:
+        return answer
+    else:
+        dfs1(begin,target,words,visited)
