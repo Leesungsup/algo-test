@@ -45,6 +45,7 @@ def dijkstra(start):
                 distance[i[1]]=dist+i[0]
                 heapq.heappush(q,(dist+i[0],i[1]))
 import heapq
+from collections import deque
 def BackTracking(maze,ex,ey):
     dx=[-1,1,0,0]
     dy=[0,0,-1,1]
@@ -86,16 +87,9 @@ def dijkstra(x,y,ex,ey):
             if 0<=xx< n and 0<= yy < len(map[n-1]) and map1[xx][yy] < 0:
                 if map[xx][yy]==0 or map[xx][yy]==3:
                     map1[xx][yy]=dist
-                    canvas.create_oval(yy * 30, xx * 30, yy * 30 + 30, xx * 30 + 30, fill="green")
-                    root.update()
-                    time.sleep(0.2)
                     heapq.heappush(q,(dist+1,(xx,yy)))
     route=BackTracking(map1,ex,ey)
     route.append((ex,ey))
     for i in route:
-        canvas.create_oval(i[1] * 30, i[0] * 30, i[1] * 30 + 30, i[0] * 30 + 30, fill="red")
-        root.update()
-        time.sleep(0.2)
-    messagebox.showinfo(title="성공", message="미로 찾기에 성공하셨습니다")
-    canvas.delete("all")
+        print(i[1],i[0])
     return
