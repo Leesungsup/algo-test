@@ -1,6 +1,4 @@
 from itertools import combinations
-def f1(x):
-    return my_dict[x]
 def solution(orders, course):
     my_dict = {'x':10, 'y':30, 'z': 20,'k':30}
     #key_max = max(my_dict.keys(), key=f1)
