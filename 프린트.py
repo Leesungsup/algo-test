@@ -33,7 +33,29 @@ def solution(array,location):
             answer=index1
     print(answer)
 
-
+def solution7(priorities, location):
+    answer=0
+    q=deque(priorities)
+    q1=deque()
+    for i in range(len(priorities)):
+        q1.append(i)
+    time=0
+    while q:
+        x=q.popleft()
+        x1=q1.popleft()
+        count=0
+        for i in range(len(q)):
+            if q[i]>x:
+                count=1
+        if count==1:
+            q.append(x)
+            q1.append(x1)
+        else:
+            time+=1
+            if x1==location:
+                answer=time
+                break
+    return answer
 array=list(map(int,input().split()))
 location=int(input())
 solution(array,location)

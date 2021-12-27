@@ -1,4 +1,72 @@
 from collections import deque
+def solution9(prices):
+    answer=[]
+    q=deque(prices)
+    while q:
+        count=0
+        x=q.popleft()
+        for i in q:
+            count+=1
+            if x>i:
+                break
+        answer.append(count)
+    return answer
+def solution8(bridge_length, weight, truck_weights):
+    answer=0
+    q=deque()
+    for i in range(bridge_length):
+        q.append(0)
+    time=0
+    while q:
+        time+=1
+        q.popleft()
+        if truck_weights:
+            if sum(q)+truck_weights[0]<=weight:
+                q.append(truck_weights.pop(0))
+            else:
+                q.append(0)
+    answer=time
+    return answer
+def solution7(priorities, location):
+    answer=0
+    q=deque(priorities)
+    q1=deque()
+    for i in range(len(priorities)):
+        q1.append(i)
+    time=0
+    while q:
+        x=q.popleft()
+        x1=q1.popleft()
+        count=0
+        for i in range(len(q)):
+            if q[i]>x:
+                count=1
+        if count==1:
+            q.append(x)
+            q1.append(x1)
+        else:
+            time+=1
+            if x1==location:
+                answer=time
+                break
+    return answer
+def solution6(progress,speeds):
+    answer=[]
+    q=deque(progress)
+    q1=deque(speeds)
+    time=0
+    while q:
+        if q[0]+(q1[0]*time)>=100:
+            q.popleft()
+            q1.popleft()
+            d+=1
+        else:
+            if d>0:
+                answer.append(d)
+            time+=1
+            d=0
+    answer.append(d)
+    return answer
 def solution5(progress,speeds):
     answer=[]
     q=deque(progress)
