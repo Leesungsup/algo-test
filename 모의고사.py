@@ -1,3 +1,27 @@
+
+def solution1(answers):
+    answer = []
+    count=[0]*3
+    j=[1,2,3,4,5]
+    j1=[2,1,2,3,2,4,2,5]
+    j2=[3, 3, 1, 1, 2, 2, 4, 4, 5, 5]
+    for i in range(len(answers)):
+        if j[i%5]==answers[i]:
+            count[0]+=1
+        if j1[i%8]==answers[i]:
+            count[1]+=1
+        if j2[i%10]==answers[i]:
+            count[2]+=1
+    m=-987654321
+    index=0
+    for i in range(3):
+        if m<count[i]:
+            m=count[i]
+            index=i
+    for i in range(3):
+        if count[index]==count[i]:
+            answer.append(i+1)
+    return answer
 def solution(answers):
     answer=[]
     count=[0]*3
