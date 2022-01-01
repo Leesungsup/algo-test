@@ -143,6 +143,20 @@ def solution3(begin,target,words):
     else:
         answer=dfs(begin,target,words,visited)
     return answer
+def solution(n,computers):
+    answer=0
+    q=deque()
+    visited=[0]*n
+    while 0 in visited:
+        q.append(visited.index(0))
+        while q:
+            v=q.popleft()
+            visited[v]=1
+            for i in range(n):
+                if visited[v]==0 and computers[v][i]==1:
+                    q.append(i)
+        answer+=1
+    return answer
 from collections import defaultdict
 def solution4(tickets):
     answer=[]
@@ -255,3 +269,6 @@ def solution7(begin,target,words):
         return answer
     else:
         dfs1(begin,target,words,visited)
+def solution(tickets):
+    answer = []
+    return answer

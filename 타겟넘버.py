@@ -1,6 +1,22 @@
 from collections import deque
 def solution(numbers,target):
     answer=0
+    q=deque()
+    q.append((0,numbers[0]))
+    q.append((0,-numbers[0]))
+    num=0
+    k=0
+    while q:
+        index,num=q.popleft()
+        if index+1==len(numbers):
+            if num==target:
+                answer+=1
+        else:
+            q.append((index+1,num-numbers[index+1]))
+            q.append((index+1,num+numbers[index+1]))
+    return answer
+def solution(numbers,target):
+    answer=0
     q=[]
     q=deque()
     n=len(numbers)
