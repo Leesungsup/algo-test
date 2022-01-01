@@ -1,3 +1,44 @@
+def sokution2(distance,rocks,n):
+    answer=0
+    rocks.sort()
+    rocks.append(distance)
+    left=0
+    right=distance
+    while left<right:
+        mid=(left+right)//2
+        mid_distance=987654321
+        remo=0
+        cur=0
+        for i in rocks:
+            diff=i-cur
+            if mid>diff:
+                remo+=1
+            else:
+                cur=i
+                mid_distance=min(mid_distance,diff)
+        if remo>n:
+            right=mid-1
+        else:
+            answer=mid_distance
+            left=mid+1
+    return answer
+def solution1(n,times):
+    answer=0
+    right=max(times)*n
+    left=1
+    while left<right:
+        mid=(left+right)//2
+        people=0
+        for i in times:
+            people+=mid//i
+            if people>=n:
+                break
+        if people>=n:
+            right=mid-1
+            answer=mid
+        else:
+            left=mid+1
+    return answer
 def quick(array,start,end):
     if start>=end:
         return
