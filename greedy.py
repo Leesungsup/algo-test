@@ -1,4 +1,38 @@
 import heapq
+from itertools import combinations
+def solution(number, k):
+    answer = ''
+    s=list(number)
+    max=-987654321
+    for j in combinations(s,len(s)-k):
+        num=''.join(j)
+        if max<int(num):
+            max=int(num)
+            d=num
+    answer=d
+    print(answer)
+    return answer
+def solution(name):
+    answer=0
+    n=len(name)
+    for i,k in enumerate(name):
+        answer+=min(ord(k)-ord('A'),ord('Z')-ord(k)+1)
+        next=i+1
+        while next<len(name) and name[next]=='A':
+            next+=1
+        n=min(n,i+i+len(name)-next)
+    answer+=n
+def solution(n, lost, reserve):
+    answer = 0
+    lost_set=set(lost)-set(reserve)
+    reverve_set=set(reserve)-set(lost)
+    for i in reverve_set:
+        if i-1 in lost_set:
+            lost_set.remove(i-1)
+        elif i+1 in lost_set:
+            lost_set.remove(i+1)
+    answer=n-len(lost_set)
+    return answer
 def prim(graph,start_node,visited):
     visited[start_node]=1
     q=graph[start_node]
