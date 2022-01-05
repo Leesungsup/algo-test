@@ -14,17 +14,19 @@ def solution(number, k):
     return answer
 def solution1(number,k):
     answer=''
-    numbers=list(number)
     stack=[]
-    for i in numbers:
+    numbers=list(number)
+    for num in numbers:
         if not stack:
-            stack.append(i)
+            stack.append(num)
+            continue
         if k>0:
-            while stack[-1]<i:
+            while stack[-1]<num:
                 stack.pop()
                 k-=1
-                if not stack and k<=0:
+                if not stack or k<=0:
                     break
-        stack.append(i)
-    return answer
+        stack.append(num)
+    stack = stack[:-k] if k > 0 else stack
+    return ''.join(stack)
 solution("1924",2)
