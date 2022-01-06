@@ -9,7 +9,7 @@ def solution(n,computers):
             v=q.popleft()
             visited[v]=1
             for i in range(n):
-                if visited[v]==0 and computers[v][i]==1:
+                if visited[i]==0 and computers[v][i]==1:
                     q.append(i)
         answer+=1
     return answer

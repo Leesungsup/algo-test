@@ -1,4 +1,33 @@
 from collections import deque
+
+def solution(n,computers):
+    answer=0
+    visited=[0]*n
+    q=deque()
+    while 0 in visited:
+        q.append(visited.index(0))
+        while q:
+            v=q.popleft()
+            visited[v]=1
+            for i in range(n):
+                if visited[i]==0 and computers[v][i]==1:
+                    q.append(i)
+        answer+=1
+    return answer
+def dfs(computers,i,n,visited):
+    visited[i]=1
+    for j in range(n):
+        if i!=j and computers[i][j]==0:
+            if visited[j]==0:
+                dfs(computers,j,n,visited)
+def solution(n,computers):
+    answer=0
+    graph=[[] for _ in range(n+1)]
+    visited=[0]*n
+    for i in range(n):
+        dfs(computers,i,n,visited)
+        answer+=1
+    return answer
 def solution(numbers,target):
     answer=0
     q=[]
