@@ -1,6 +1,6 @@
 from itertools import permutations
 import re
-def solution(expression):
+"""def solution(expression):
     answer = 0
     r=['*','+','-']
     k=permutations(r,3)
@@ -71,5 +71,37 @@ def solution(expression):
                             g1=p
         print(sic1[g1])
         print(sic1)
+    return answer"""
+from itertools import permutations
+import re
+def make_operation_permutations(expression):
+    operation_list = []
+    if '*' in expression:
+        operation_list.append('*')
+    if '+' in expression:
+        operation_list.append('+')
+    if '-' in expression:
+        operation_list.append('-')
+    operation_permutaions = list(permutations(operation_list))
+    return operation_permutaions
+
+def solution(expression):
+    answer = 0
+    operation_permutations = make_operation_permutations(expression)
+    expression = re.split('([^0-9])', expression)
+    for operation_permutation in operation_permutations:
+        copied_expression = expression[:]
+        for operator in operation_permutation:
+            while operator in copied_expression:
+                op_idx = copied_expression.index(operator)
+                if copied_expression[op_idx] == '*':
+                    cal = int(copied_expression[op_idx - 1]) * int(copied_expression[op_idx + 1])
+                elif copied_expression[op_idx] == '+':
+                    cal = int(copied_expression[op_idx - 1]) + int(copied_expression[op_idx + 1])
+                elif copied_expression[op_idx] == '-':
+                    cal = int(copied_expression[op_idx - 1]) - int(copied_expression[op_idx + 1])
+                copied_expression[op_idx - 1] = cal
+                copied_expression = copied_expression[:op_idx] + copied_expression[op_idx + 2:]
+        answer = max(answer, abs((int(copied_expression[0]))))
     return answer
 solution("100-200*300-500+20")
