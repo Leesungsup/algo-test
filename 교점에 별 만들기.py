@@ -1,4 +1,4 @@
-from collections import combinations
+from itertools import combinations
 def interation(line1,line2):
     a,b,e=line1
     c,d,f=line2
