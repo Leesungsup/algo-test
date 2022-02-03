@@ -57,3 +57,19 @@ def solution(dirs):
     print(answer)
     return answer
 solution("ULURRDLLU")
+def solution1(dirs):
+    answer=0
+    d={'U':(0,-1),'D':(0,1),'R':(1,0),'L':(-1,0)}
+    x=0
+    y=0
+    route=set()
+    for i in dirs:
+        nx=x+d[i][0]
+        ny=y+d[i][1]
+        if nx>=-5 and nx<=5 and ny>=-5 and ny<=5:
+            route.append((x,y,nx,ny))
+            route.append((nx,ny,x,y))
+            x=nx
+            y=ny
+    print(len(route))
+    return len(route)//2
