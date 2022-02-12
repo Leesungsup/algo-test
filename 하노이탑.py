@@ -9,3 +9,5 @@ def solution(n):
         move(n,start,to)
         hanoi(n-1,via,to,start)
     hanoi(n,1,3,2)
+    return answer
+solution(3)
