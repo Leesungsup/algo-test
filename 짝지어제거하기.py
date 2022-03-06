@@ -61,3 +61,21 @@ def solution(s):
     print(answer)
     return answer
 solution('baabaa')
+def solution1(s):
+    answer=0
+    st=list(s)
+    q=[]
+    for i in st:
+        if len(q)==0:
+            q.append(i)
+        else:
+            if q[-1]==i:
+                q.pop(-1)
+            else:
+                q.append(i)
+    return 1 if len(q)==0 else 0
+    if len(q)==0:
+        return 1
+    else :
+        return 0
+print(solution1('baabaa'))
