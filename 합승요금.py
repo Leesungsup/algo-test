@@ -19,7 +19,7 @@ def dijkstra(src, dst):
     pq = [[0, src]]
 
     while pq:
-        w, x = heappop(pq)
+        w, x = heapq.heappop(pq)
 
         if table[x] < w: continue
 
@@ -28,7 +28,7 @@ def dijkstra(src, dst):
             ncost += w
             if ncost < table[nx]:
                 table[nx] = ncost
-                heappush(pq, [ncost, nx])
+                heapq.heappush(pq, [ncost, nx])
 
     return table[dst]
 
