@@ -4,22 +4,6 @@ def quick(start,end,array):
     pivot=start
     left=start+1
     right=end
-    while left<right:
-        while array[pivot]>=array[left] and left<=end:
-            left+=1
-        while array[pivot]<=array[right] and right>start:
-            right-=1
-        if right>left:
-            array[right],array[left]=array[left],array[right]
-        else:
-            array[right],array[pivot]=array[pivot],array[right]
-
-def quick(start,end,array):
-    if start>=end:
-        return array
-    pivot=start
-    left=start+1
-    right=end
     while start<end:
         while array[left]<=array[pivot] and left<=end:
             left+=1
