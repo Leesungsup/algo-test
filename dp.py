@@ -51,3 +51,15 @@ def solution(N,number):
         else:
             answer = -1
     return answer
+def solution(money):
+    dp=[0]*len(money)
+    dp[0]=money[0]
+    dp[1]=max(money[0],money[1])
+    for i in range(2,len(money)):
+        dp[i]=max(dp[i-1],dp[i-2]+money[i])
+    dp1=[0]*len(money)
+    dp1[0]=0
+    dp1[1]=money[1]
+    for i in range(2,len(money)):
+        dp1[i]=max(dp1[i-1],dp[i-2]+money[i])
+    return max(max(dp),max(dp1))

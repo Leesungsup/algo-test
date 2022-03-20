@@ -144,3 +144,69 @@ def solution(scoville,k):
 scoville=list(map(int,input().split()))
 k=int(input())
 solution(scoville,k)
+import heapq
+def solution(jobs):
+    answer = 0
+    now=0
+    start=-1
+    i=0
+    heap=[]
+    while i<len(jobs):
+        for job in jobs:
+            if start<job[0]<=now :
+                heapq.heappush(heap,(job[1],job[0]))
+        if 0<len(heap):
+            dist,time=heapq.heappop(heap)
+            start=now
+            now+=dist
+            answer+=(now-time)
+            i+=1
+        else:
+            now+=1
+    return answer
+import heapq
+def solution(scoville, K):
+    answer = 0
+    heapq.heapify(scoville)
+    time=0
+    while scoville:
+        x=heapq.heappop(scoville)
+        if len(scoville)==0:
+            if x<K:
+                answer=-1
+                return answer
+        else:
+            if x<K:
+                x1=heapq.heappop(scoville)
+                x2=x+(x1*2)
+                heapq.heappush(scoville,x2)
+                answer+=1
+            else:
+                break
+    return answer
+import heapq
+def solution(operations):
+    answer = []
+    q1=[]
+    q2=[]
+    for i in operations:
+        k=i.split()
+        if k[0]=='I':
+            heapq.heappush(q1,int(k[1]))
+            heapq.heappush(q2,int(k[1])*-1)
+        elif k[0]=='D':
+            if len(q1)==0 and len(q2)==0:
+                continue
+            else:
+                if k[1]=='1':
+                    n=heapq.heappop(q2)
+                    q1.remove(n*-1)
+                else:
+                    n=heapq.heappop(q1)
+                    q2.remove(n*-1)
+    if len(q1)==0 and len(q2)==0:
+        return [0,0]
+    else:
+        answer.append(heapq.heappop(q2)*-1)
+        answer.append(heapq.heappop(q1))
+    return answer
