@@ -21,7 +21,7 @@ def solution1(number,k):
             stack.append(num)
             continue
         if k>0:
-            while stack[-1]<num:
+            while int(stack[-1])<int(num):
                 stack.pop()
                 k-=1
                 if not stack or k<=0:

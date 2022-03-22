@@ -67,7 +67,7 @@ def solution(number,k):
             stack.append(i)
             continue
         if k>0:
-            while stack[-1]<i:
+            while int(stack[-1])<int(i):
                 stack.pop()
                 k-=1
                 if k<=0 and not stack:
@@ -75,18 +75,23 @@ def solution(number,k):
         stack.append(i)
     answer=stack[:-k] if k>0 else stack
     return ''.join(answer)
-def solution(number, k):
-    answer = ''
-    s=list(number)
-    max=-987654321
-    for j in combinations(s,len(s)-k):
-        num=''.join(j)
-        if max<int(num):
-            max=int(num)
-            d=num
-    answer=d
-    print(answer)
-    return answer
+def solution(number,k):
+    answer=''
+    stack=[]
+    numbers=list(number)
+    for num in numbers:
+        if not stack:
+            stack.append(num)
+            continue
+        if k>0:
+            while int(stack[-1])<int(num):
+                stack.pop()
+                k-=1
+                if not stack or k<=0:
+                    break
+        stack.append(num)
+    stack = stack[:-k] if k > 0 else stack
+    return ''.join(stack)
 def solution(name):
     answer=0
     n=len(name)
