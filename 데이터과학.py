@@ -126,3 +126,35 @@ df = pd.DataFrame(ar)
 #print(df1.fillna(method="bfill"))
 #print("fillna(method='ffill')")
 #print(df1.fillna(method="ffill"))
+import nltk
+#nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
+from nltk.tokenize import word_tokenize
+from nltk.tokenize import WordPunctTokenizer
+from nltk.stem import WordNetLemmatizer
+from nltk.stem import PorterStemmer
+from tensorflow.keras.preprocessing.text import text_to_word_sequence
+from nltk.corpus import stopwords
+import re
+s=PorterStemmer()
+n=WordNetLemmatizer()
+text="Dear Sir, SEEKING YOUR IMMEDIATE ASSISTANCE. Please permit me to make your acquaintance in so informal a manner. My name is. DAN PATRICK of the Democratic Republic of Congo and One of the close aides to the former President of the Democratic Republic of Congo LAURENT KABILA of blessed memory, may his soul rest in peace."
+text=text.lower()
+text = re.sub(r"[^a-zA-Z0-9]", " ", text)
+stop_words = set(stopwords.words('english'))
+words = text_to_word_sequence(text)
+result=[]
+result1=[]
+result2=[]
+for w in words:
+    if w not in stop_words:
+        result.append(w)
+print([n.lemmatize(w) for w in result])
+for w in result:
+    result1.append(n.lemmatize(w))
+print(result1)
+print([s.stem(w) for w in result])
+for w in result1:
+    result2.append(s.stem(w))
+print(result2)
