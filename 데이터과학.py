@@ -158,3 +158,74 @@ print([s.stem(w) for w in result])
 for w in result1:
     result2.append(s.stem(w))
 print(result2)
+import pandas as pd
+import numpy as np
+import featuretools.variable_types as vtypes
+import featuretools as ft
+import warnings
+warnings.filterwarnings('ignore')
+base_src='./drive/MyDrive'
+clients_src=base_src+'/clients.csv'
+clients = pd.read_csv('./clients.csv', parse_dates = ['joined'])
+loans = pd.read_csv('./loans.csv', parse_dates = ['loan_start', 'loan_end'])
+payments = pd.read_csv('./payments.csv', parse_dates = ['payment_date'])
+stats = loans.groupby('client_id')['loan_amount'].agg(['mean', 'max', 'min','sum'])
+print(clients)
+print(loans[(loans['client_id']==26945)])
+stats.columns = ['mean_loan_amount', 'max_loan_amount', 'min_loan_amount','total_loan_amount']
+clients=clients.merge(stats, left_on = 'client_id', right_index=True, how = 'left')
+print(clients)
+# Create new entityset
+#es = ft.EntitySet(id = 'clients')
+#es = es.add_dataframe(dataframe_name='clients', dataframe = clients, index = 'client_id', time_index = 'joined')
+
+#es = es.entity_from_dataframe(entity_id = 'clients', dataframe = clients,index = 'client_id', time_index = 'joined')
+#es = es.add_dataframe(dataframe_name = 'loans', dataframe = loans, variable_types = {'repaid': ft.variable_types.Categorical},index = 'loan_id', time_index = 'loan_start')
+
+#es = es.entity_from_dataframe(entity_id = 'loans', dataframe = loans,variable_types = {'repaid': ft.variable_types.Categorical},index = 'loan_id',time_index = 'loan_start')
+#es = es.add_dataframe(dataframe_name = 'payments', dataframe = payments,variable_types = {'missed': vtypes.Categorical},make_index = True, index = 'payment_id',time_index = 'payment_date')
+
+#es = es.entity_from_dataframe(entity_id = 'payments',dataframe = payments,variable_types = {'missed': ft.variable_types.Categorical},make_index = True,index = 'payment_id',time_index = 'payment_date')
+
+#print(es)
+import pandas as pd
+import numpy as np
+import sklearn
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+base_src='./drive/MyDrive'
+housing = pd.read_csv('./California_Houses.csv')
+print(housing.head())
+housing_ind = housing.drop("Median_House_Value",axis=1)
+housing_ind['Longitude']=housing_ind['Longitude']*-1
+print(housing_ind.head())
+housing_dep = housing["Median_House_Value"]
+value_house=housing.loc[:,['Median_House_Value']]
+print("Medain Housing Values")
+print(value_house.head())
+bestfeatures = SelectKBest(score_func=chi2, k=13)
+fit = bestfeatures.fit(housing_ind,value_house)
+dfcolumns = pd.DataFrame(housing_ind.columns)
+dfscores = pd.DataFrame(fit.scores_)
+featureScores = pd.concat([dfcolumns, dfscores],axis=1)
+featureScores.columns = ['Specs','Score'] #name the dataframe columns
+print(featureScores.nlargest(13,'Score')) #print 10 bestfeature
+#print(housing_dep.head())
+#sklearn.datasets.fetch_california_housing(*, data_home=None, download_if_missing=True, return_X_y=False, as_frame=False)
+import sklearn
+from sklearn.ensemble import ExtraTreesClassifier
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+base_src='./drive/MyDrive'
+housing = pd.read_csv('./California_Houses.csv')
+housing_ind = housing.drop("Median_House_Value",axis=1)
+housing_ind['Longitude']=housing_ind['Longitude']*-1
+housing_dep = housing["Median_House_Value"]
+value_house=housing.loc[:,['Median_House_Value']]
+model = ExtraTreesClassifier()
+model.fit(housing_ind,value_house.values.ravel())
+print(model.feature_importances_)
+feat_importances = pd.Series(model.feature_importances_, index=housing_ind.columns)
+feat_importances.nlargest(10).plot(kind='barh')
+plt.show()
