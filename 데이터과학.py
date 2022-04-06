@@ -229,3 +229,280 @@ print(model.feature_importances_)
 feat_importances = pd.Series(model.feature_importances_, index=housing_ind.columns)
 feat_importances.nlargest(10).plot(kind='barh')
 plt.show()
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import preprocessing
+import seaborn as sns
+from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import LabelEncoder
+
+base_src='./drive/MyDrive'
+df=pd.read_csv(base_src+'/bmi_data_lab3.csv') #read csv file and store in df
+
+print("BMI DATA File")
+print(df) #print the data
+
+print("Describtion: ")
+print(df.describe()) #print df statistical info
+
+print("Column values: ")
+print(df.columns.values) #print df value of columns
+
+print("Types: ")
+print(df.dtypes) #print df coulumns types
+
+# Plot height histograms (bins=10) for each BMI value.
+grid = sns.FacetGrid(df, col='BMI')
+grid.map(plt.hist, 'Height (Inches)', bins=10)
+plt.show()
+
+# Plot weight histograms (bins=10) for each BMI value.
+grid1 = sns.FacetGrid(df, col='BMI')
+grid1.map(plt.hist, 'Weight (Pounds)', bins=10)
+plt.show()
+
+la = LabelEncoder()
+la.fit(df['Sex'])
+df['Sex'] = la.transform(df['Sex'])
+print(df)#Converting Sex from categorical data to numeric data
+
+standardScaler = preprocessing.StandardScaler() #Create standard scaler withfunction
+standardScaled_df = standardScaler.fit_transform(df)
+standardScaled_df = pd.DataFrame(standardScaled_df, columns = ['Sex', 'Age','Height (Inches)', 'Weight (Pounds)', 'BMI'])
+
+minmaxScaler = preprocessing.MinMaxScaler()#Create minmax scaler with function
+minmaxScaled_df = minmaxScaler.fit_transform(df)
+minmaxScaled_df = pd.DataFrame(minmaxScaled_df, columns = ['Sex', 'Age', 'Height (Inches)', 'Weight (Pounds)', 'BMI'])
+
+robustScaler = preprocessing.RobustScaler() #Create robust scaler with function
+robustScaled_df = robustScaler.fit_transform(df)
+robustScaled_df = pd.DataFrame(robustScaled_df, columns = ['Sex', 'Age', 'Height (Inches)', 'Weight (Pounds)', 'BMI'])
+
+fig,(ax1, ax2, ax3, ax4) = plt.subplots(ncols = 4, figsize=(14,4)) #create 4subplot box with size 14,4
+ax1.set_title('Before Scaling')
+sns.kdeplot(df['Height (Inches)'], ax=ax1) #Show kdeplot of height
+ax2.set_title('After Standard Scaling')
+sns.kdeplot(standardScaled_df['Height (Inches)'], ax=ax2) #Show height in standard scaling result
+ax3.set_title('After MinMax Scaling')
+sns.kdeplot(minmaxScaled_df['Height (Inches)'], ax=ax3)#Show height in Min-Max scaling result
+ax4.set_title('After Robust Scaling')
+sns.kdeplot(robustScaled_df['Height (Inches)'], ax=ax4)#Show height in robust scaling result
+plt.show()
+
+fig, (ax5, ax6, ax7, ax8) = plt.subplots(ncols=4, figsize=(10, 5))  # Create subplot for outputting 4 plots
+ax5.set_title('Before Scaling')
+sns.kdeplot(df['Weight (Pounds)'], ax=ax5)  # Plot scaling results for weight
+ax6.set_title('After Standard Scaling')
+sns.kdeplot(standardScaled_df['Weight (Pounds)'], ax=ax6)  # Show weight in standard scaling result
+ax7.set_title('After MinMax Scaling')
+sns.kdeplot(minmaxScaled_df['Weight (Pounds)'], ax=ax7)  # Show weight in Min-Max scaling result
+ax8.set_title('After Robust Scaling')
+sns.kdeplot(robustScaled_df['Weight (Pounds)'], ax=ax8)  #Show weight in robust scaling result
+plt.show()
+
+# The number of NAN for each row
+print("The number of NAN for each row: ")
+print(df.isnull().sum(axis=1))
+
+# The number of NAN for each column
+print("The number of NAN for each column:")
+print(df.isna().sum())
+
+# Extract all rows without NAN
+print("Extract all rows without NAN: ")
+print(df.dropna())
+
+# Fill NaN with mean
+print("Fill NaN with mean")
+print(df.fillna(df.mean()))
+
+# Fill NaN with median
+print("Fill NaN with median")
+print(df.fillna(df.median()))
+
+# Fill NaN using ffill method
+print("FFill")
+print(df.fillna(axis=0, method='ffill'))
+
+# Fill NaN using bfill method
+print('BFill')
+print(df.fillna(axis=0, method='bfill'))
+
+# The parentheses in the column name restrict the coding. Therefore, change the name
+df.rename(columns={'Height (Inches)' : 'Height', 'Weight (Pounds)' : 'Weight'}, inplace=True)
+
+df1 = df.dropna()  # Create a data frame with a NAN value dropped for linear regression fitting
+
+# Assignment for Coordination
+x1 = df1['Height']
+y1 = df1['Weight']
+
+
+# Apply data to linear regression
+E = linear_model.LinearRegression()
+E.fit(x1.values.reshape(-1, 1), y1)  # Reshape because it needs to be in two dimensions.
+
+# Draw a line with forecasts obtained by fitting
+plt.plot(x1, E.predict(x1.values.reshape(-1, 1)))
+
+# Coefficients and intercept Outputs obtained by fitting
+print('Coeffficients : ', E.coef_)
+print('Intercept : ', E.intercept_)
+
+
+# Declare a function that replaces nan with the predicted value when it finds it.
+def nanTopreWeight(k):
+    if np.isnan(k.Weight):
+        # If nan is found in the weight column of the dataframe
+        k.Weight = (E.predict([[k.Height]]))  # Replace with forecasts obtained by linear regression
+    return k.Weight
+
+# a = intercept, b = coefficient
+a = float(E.intercept_)
+b = float(E.coef_)
+
+# Prediction of height through linear regression equation and weight value
+def nanTopreHeight(k):
+    if np.isnan(k.Height):  # If nan is found in the height column of the dataframe
+        #Linear function: y=a(intercept)+b(coefficient)x, so x = (y - a) / b
+        k.Height = (float(k.Weight) - a) / b  # Replace with forecasts obtained by linear regression
+    return k.Height
+
+# Update nan values ​​in dataframe with predictions using previously defined function
+df['Weight'] = df.apply(nanTopreWeight, axis=1)
+df['Height'] = df.apply(nanTopreHeight, axis=1)
+
+print(df)
+
+# Print a scatterplot of the dataframe with dropped nan values.
+# Dataframe with nan values ​​filled with predictions of different colors.
+x = df['Height']
+y = df['Weight']
+plt.title("Scatter Plot", fontsize=15)
+plt.scatter(x, y, color='r')
+plt.scatter(x1, y1, color='b')
+plt.show()
+
+# For male dataset
+base_src='./drive/MyDrive'
+dm = pd.read_csv(base_src+'/bmi_data_lab3.csv')  # Read the csv file and save it to the pandas data frame.
+
+# The parentheses in the column name restrict the coding. Therefore, change the name
+dm.rename(columns={'Height (Inches)' : 'Height', 'Weight (Pounds)' : 'Weight'}, inplace=True)
+
+dfm1 = dm.query("Sex=='Male'")  # Only import gender as male.
+dm = dfm1.copy()  # Because SettingWithCopyWarning pops up, make a new copy and manage it.
+dm1 = dm.dropna()  # Create a data frame with a NAN value dropped for linear regression fitting
+
+# Assignment for Coordination
+xm1 = dm1['Height']
+ym1 = dm1['Weight']
+
+# Apply data to linear regression
+dm_E = linear_model.LinearRegression()
+dm_E.fit(xm1.values.reshape(-1, 1), ym1)  # Reshape because it needs to be in two dimensions.
+
+# Draw a line with forecasts obtained by fitting
+plt.plot(xm1, dm_E.predict(xm1.values.reshape(-1, 1)))
+
+# Linear function: y=a(intercept)+b(coefficient)x
+print('Coefficient : ', dm_E.coef_)
+print('Intercept : ', dm_E.intercept_)
+
+
+# Declare a function that replaces nan with the predicted value when it finds it.
+def nanTopreWeight_male(k):
+    if np.isnan(k.Weight): # If nan is found in the weight column of the dataframe
+        k.Weight = (dm_E.predict([[k.Height]]))  # Replace with forecasts obtained by linear regression
+    return k.Weight
+
+
+# a = intercept, b = coefficient
+a = float(dm_E.intercept_)
+b = float(dm_E.coef_)
+
+
+# Prediction of height through linear regression equation and weight value
+def nanTopreHeight_male(k):
+    if np.isnan(k.Height): # If nan is found in the height column of the dataframe
+        # Linear function: y=a(intercept)+b(coefficient)x, so x = (y - a) / b
+        k.Height = (float(k.Weight) - a) / b  # Replace with forecasts obtained by linear regression
+    return k.Height
+
+# Update nan values ​​in dataframe with predictions using previously defined function
+dm['Weight'] = dm.apply(nanTopreWeight_male, axis=1)
+dm['Height'] = dm.apply(nanTopreHeight_male, axis=1)
+
+print(dm)
+
+# Print a scatterplot of the dataframe with dropped nan values.
+# Dataframe with nan values ​​filled with predictions of different colors.
+xm = dm['Height']
+ym = dm['Weight']
+plt.title("Scatter Plot(male)", fontsize=15)
+plt.scatter(xm, ym, color='r')
+plt.scatter(xm1, ym1, color='b')
+plt.show()
+
+
+# For female dataset
+base_src='./drive/MyDrive'
+dff = pd.read_csv(base_src+'/bmi_data_lab3.csv')  # Read the csv file and save it to the pandas data frame.
+
+# The parentheses in the column name restrict the coding. Therefore, change the name
+dff.rename(columns={'Height (Inches)' : 'Height', 'Weight (Pounds)' : 'Weight'}, inplace=True)
+
+dfm1 = dff.query("Sex=='Female'")  # Only import gender as female.
+dfe = dfm1.copy()  # Because SettingWithCopyWarning pops up, make a new copy and manage it.
+dfe1 = dfe.dropna()  # Create a data frame with a NAN value dropped for linear regression fitting
+
+# Assignment for Coordination
+xf1 = dfe1['Height']
+yf1 = dfe1['Weight']
+
+# Apply data to linear regression
+dfe_E = linear_model.LinearRegression()
+dfe_E.fit(xf1.values.reshape(-1, 1), yf1)  # Reshape because it needs to be in two dimensions.
+
+# Draw a line with forecasts obtained by fitting
+plt.plot(xf1, dfe_E.predict(xf1.values.reshape(-1, 1)))
+
+# Linear function: y=a(intercept)+b(coefficient)x
+print('coef', dfe_E.coef_)
+print('intercept', dfe_E.intercept_)
+
+
+# Declare a function that will replace the nan values with the predicted values when they are found
+def nanTopreWeight_female(k):
+    if np.isnan(k.Weight):  # If nan is found in the weight column of the dataframe
+        k.Weight = (dfe_reg.predict([[k.Height]]))  # Replace with forecasts obtained by linear regression
+    return k.Weight
+
+
+# Linear function: y=a(intercept)+b(coefficient)x, so x = (y - a) / b
+a = float(dfe_E.intercept_)
+b = float(dfe_E.coef_)
+
+
+# Predict height values through linear regression equations and weight values
+def nanTopreHeight_female(k):
+    if np.isnan(k.Height):  # If nan is found in the height column of the dataframe
+        k.Height = (float(k.Weight) - a) / b  # Replace with forecasts obtained by linear regression
+    return k.Height
+
+# Update nan values of data frames to predictions using the functions defined previously
+dfe['Weight'] = dfe.apply(nanTopreWeight_female, axis=1)
+dfe['Height'] = dfe.apply(nanTopreHeight_female, axis=1)
+
+print(dfe)
+
+# Output the Scatter Plot of the data frame with the nan values dropped,
+# and the data frame with the nan values filled with forecasts in different colors.
+xf = dfe['Height']
+yf = dfe['Weight']
+plt.title("Scatter Plot(female)", fontsize=15)
+plt.scatter(xf, yf, color='r')
+plt.scatter(xf1, yf1, color='b')
+plt.show()
