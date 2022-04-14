@@ -779,3 +779,99 @@ for i in dfe.values:
 print(count)
 print(dfe[(dfe['BMI(predict)']==0)])
 print(dfe[(dfe['BMI(predict)']==4)])
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn import linear_model
+from sklearn.linear_model import LinearRegression
+import seaborn as sns
+
+dataset1=np.array([2400,2650,2350,4950,3100,2500,5106,3100,2900,1750])
+dataset2=np.array([41200,50100,52000,66000,44500,37700,73500,37500,56700,35600])
+dataset3=[[2400,41200],[2650,50100],[2350,52000],[4950,66000],[3100,44500],[2500,37700],[5106,73500],[3100,37500],[2900,56700],[1750,35600]]
+dataset3.sort()
+
+x_1=pd.DataFrame(dataset3,columns={'spend','income'})
+x=pd.DataFrame(dataset1)
+y=pd.DataFrame(dataset2)
+sns.scatterplot(x='spend', y='income', data=x_1)
+sns.regplot(x='spend', y='income', ci=None, data=x_1)
+b0, b1 = np.polyfit(dataset1, dataset2, 1)
+print(b0,b1)
+E=LinearRegression()
+E.fit(x.values.reshape(-1,1),y)
+
+new_dataset=np.array([3500,5300])
+new_x=pd.DataFrame(new_dataset)
+new_y=E.predict(new_x.values.reshape(-1,1))
+
+for i in range(len(new_x)):
+    dataset3.append([new_x.values.reshape(-1,1)[i][0],new_y[i][0]])
+dataset3.sort()
+print(dataset3)
+x_1=pd.DataFrame(dataset3,columns={'spend','income'})
+sns.scatterplot(x='spend', y='income', data=x_1)
+sns.regplot(x='spend', y='income', ci=None, data=x_1)
+
+
+x1=[]
+y1=[]
+dataset4=[[2400,41200],[2650,50100],[2350,52000],[4950,66000],[3100,44500],[2500,37700],[5106,73500],[3100,37500],[2900,56700],[1750,35600]]
+dataset4.sort()
+for i in dataset4:
+    x1.append(i[0])
+    y1.append(i[1])
+
+def mean(inp):
+    result = 0
+    len_inp = len(inp)
+    for i in inp:
+        result += i
+    result = result / len_inp
+    return result
+def make_b(x, y):
+    mean_x = mean(x)
+    mean_y = mean(y)
+    son = 0
+    mom = 0
+    for i in range(len(x)):
+        son += (x[i] - mean_x) * (y[i] - mean_y)
+    for i in range(len(y)):
+        mom += (x[i] - mean_x) ** 2
+    b = son / mom
+    return b
+
+def make_a(x, y):
+    mean_x = mean(x)
+    mean_y = mean(y)
+    b = make_b(x, y)
+    a = mean_y  - (b * mean_x)
+    return a
+b = make_b(x1, y1)
+a = make_a(x1, y1)
+reg_y = []
+for i in x1:
+    reg_y.append(a + (b * i))
+plt.scatter(x1, y1, label = 'real')
+print(x1)
+print(reg_y)
+plt.plot(x1, reg_y, c = 'b', label = 'reg')
+plt.legend()
+new_reg_y=[]
+new_data_x=[3500,5300]
+for i in new_data_x:
+    x1.append(i)
+    y1.append(a + (b * i))
+    reg_y.append(a + (b * i))
+"""for i in range(len(new_data_x)):
+  dataset4.append([new_data_x[i],new_reg_y[i]])
+dataset4.sort()
+x2=[]
+y2=[]
+for i in dataset4:
+  x2.append(i[0])
+  y2.append(i[1])"""
+plt.scatter(x1, y1, label = 'real')
+print(x1)
+print(reg_y)
+plt.plot(x1, reg_y, c = 'b', label = 'reg')
