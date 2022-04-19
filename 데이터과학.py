@@ -791,29 +791,37 @@ dataset2=np.array([41200,50100,52000,66000,44500,37700,73500,37500,56700,35600])
 dataset3=[[2400,41200],[2650,50100],[2350,52000],[4950,66000],[3100,44500],[2500,37700],[5106,73500],[3100,37500],[2900,56700],[1750,35600]]
 dataset3.sort()
 
-x_1=pd.DataFrame(dataset3,columns={'spend','income'})
+#Dataset input
+dataset1=np.array([2400,2650,2350,4950,3100,2500,5106,3100,2900,1750])
+dataset2=np.array([41200,50100,52000,66000,44500,37700,73500,37500,56700,35600])
+dataset3=[[2400,41200],[2650,50100],[2350,52000],[4950,66000],[3100,44500],[2500,37700],[5106,73500],[3100,37500],[2900,56700],[1750,35600]]
+dataset3.sort()
+#Plot scatterplots and linear regression
+x_1=pd.DataFrame(dataset3,columns=['spends','income'])
 x=pd.DataFrame(dataset1)
 y=pd.DataFrame(dataset2)
-sns.scatterplot(x='spend', y='income', data=x_1)
-sns.regplot(x='spend', y='income', ci=None, data=x_1)
-b0, b1 = np.polyfit(dataset1, dataset2, 1)
-print(b0,b1)
-E=LinearRegression()
-E.fit(x.values.reshape(-1,1),y)
+sns.scatterplot(x='spends', y='income', data=x_1)
+sns.regplot(x='spends', y='income', ci=None, data=x_1)
 
+
+#Linear Regression Prediction
+E=LinearRegression()
+
+E.fit(x_1.loc[:,'spends'].values.reshape(-1,1),x_1.loc[:,'income'])
 new_dataset=np.array([3500,5300])
 new_x=pd.DataFrame(new_dataset)
 new_y=E.predict(new_x.values.reshape(-1,1))
 
+#Plot scatterplots and linear regression with new data added
 for i in range(len(new_x)):
-    dataset3.append([new_x.values.reshape(-1,1)[i][0],new_y[i][0]])
+    dataset3.append([new_x.values.reshape(-1,1)[i][0],new_y[i]])
 dataset3.sort()
-print(dataset3)
-x_1=pd.DataFrame(dataset3,columns={'spend','income'})
-sns.scatterplot(x='spend', y='income', data=x_1)
-sns.regplot(x='spend', y='income', ci=None, data=x_1)
 
+x_1=pd.DataFrame(dataset3,columns=['spends','income'])
+sns.scatterplot(x='spends', y='income', data=x_1)
+sns.regplot(x='spends', y='income', ci=None, data=x_1)
 
+#Dataset input
 x1=[]
 y1=[]
 dataset4=[[2400,41200],[2650,50100],[2350,52000],[4950,66000],[3100,44500],[2500,37700],[5106,73500],[3100,37500],[2900,56700],[1750,35600]]
@@ -822,56 +830,72 @@ for i in dataset4:
     x1.append(i[0])
     y1.append(i[1])
 
-def mean(inp):
-    result = 0
-    len_inp = len(inp)
-    for i in inp:
-        result += i
-    result = result / len_inp
+#Sigma x
+def sum(x):
+    result=0
+    for i in x:
+        result+=i
     return result
-def make_b(x, y):
-    mean_x = mean(x)
-    mean_y = mean(y)
-    son = 0
-    mom = 0
+#Sigma x**2
+def sum2(x):
+    result=0
+    for i in x:
+        b=i*i
+        result+=b
+    return result
+#Sigma x*y
+def sumxy(x,y):
+    result=0
     for i in range(len(x)):
-        son += (x[i] - mean_x) * (y[i] - mean_y)
-    for i in range(len(y)):
-        mom += (x[i] - mean_x) ** 2
-    b = son / mom
-    return b
+        result+=x[i]*y[i]
+    return result
+sigma_x=sum(x1)
+sigma_y=sum(y1)
+sigma_x_sqr=sum2(x1)
+sigma_y_sqr=sum2(y1)
+sigma_xy=sumxy(x1,y1)
 
-def make_a(x, y):
-    mean_x = mean(x)
-    mean_y = mean(y)
-    b = make_b(x, y)
-    a = mean_y  - (b * mean_x)
-    return a
-b = make_b(x1, y1)
-a = make_a(x1, y1)
-reg_y = []
+
+#Linear regression formula
+def make_a(sigma_x,sigma_y,sigma_xy,sigma_x_sqr):
+    son=(len(x1)*sigma_xy)-(sigma_x*sigma_y)
+    mom=(len(x1)*sigma_x_sqr)-(sigma_x*sigma_x)
+    return son/mom
+def make_b(sigma_y,a,sigma_x):
+    son=sigma_y-(a*sigma_x)
+    return son/len(x1)
+a=make_a(sigma_x,sigma_y,sigma_xy,sigma_x_sqr)
+b=make_b(sigma_y,a,sigma_x)
+#print(a,b)
+
+#Plot scatterplots and linear regression
+plt.scatter(x1,y1)
+plt.xlabel('spends')
+plt.ylabel('income')
+reg_y=[]
 for i in x1:
-    reg_y.append(a + (b * i))
-plt.scatter(x1, y1, label = 'real')
-print(x1)
-print(reg_y)
-plt.plot(x1, reg_y, c = 'b', label = 'reg')
+    reg_y.append(a*i+b)
+plt.plot(x1,reg_y,c = 'r', label = 'reg')
 plt.legend()
-new_reg_y=[]
+
+#Plot scatterplots and linear regression with new data added
+new_data_y=[]
 new_data_x=[3500,5300]
 for i in new_data_x:
-    x1.append(i)
-    y1.append(a + (b * i))
-    reg_y.append(a + (b * i))
-"""for i in range(len(new_data_x)):
-  dataset4.append([new_data_x[i],new_reg_y[i]])
+    new_data_y.append((a*i) + b)
+for i in range(len(new_data_x)):
+    dataset4.append([new_data_x[i],new_data_y[i]])
 dataset4.sort()
 x2=[]
 y2=[]
 for i in dataset4:
-  x2.append(i[0])
-  y2.append(i[1])"""
-plt.scatter(x1, y1, label = 'real')
-print(x1)
-print(reg_y)
-plt.plot(x1, reg_y, c = 'b', label = 'reg')
+    x2.append(i[0])
+    y2.append(i[1])
+plt.scatter(x2, y2)
+plt.xlabel('spends')
+plt.ylabel('income')
+new_reg_y=[]
+for i in x2:
+    new_reg_y.append(a*i+b)
+plt.plot(x2,new_reg_y,c = 'r', label = 'reg')
+plt.legend()
