@@ -899,3 +899,151 @@ for i in x2:
     new_reg_y.append(a*i+b)
 plt.plot(x2,new_reg_y,c = 'r', label = 'reg')
 plt.legend()
+
+import numpy as np #to work with arrays
+import pandas as pd #to read the dataset
+import sklearn
+import seaborn as sns
+import matplotlib.pyplot as plt #to plot stats
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+%matplotlib inline
+base_src='./drive/MyDrive'
+housing = pd.read_csv(base_src+'/California_Houses.csv')
+X = housing[housing.columns.difference(['Median_House_Value'])]
+y = housing[['Median_House_Value']]
+#print(X.head())
+scaler = StandardScaler()
+# 데이터 학습
+scaler.fit(X)
+# 변환
+scaler_data = scaler.transform(X)
+pca = PCA(n_components = 2)
+pca.fit(scaler_data)
+d=pca.transform(scaler_data)
+#print(d)
+df_X = pd.DataFrame(X)
+#print(df_X.columns)
+print(pd.DataFrame(pca.components_,columns=df_X.columns,index = ['PC-1','PC-2']))
+data2 = pd.DataFrame(data = pca.transform(scaler_data), columns=['pc1', 'pc2'])
+#print(data2.head())
+from sklearn.cluster import KMeans
+x = []   # k 가 몇개인지
+y = []   # 응집도가 몇인지
+for k in range(1, 12):
+    kmeans = KMeans(n_clusters = k)
+    kmeans.fit(data2)
+    x.append(k)
+    y.append(kmeans.inertia_)
+#plt.plot(x, y)
+kmeans = KMeans(n_clusters=2)
+kmeans.fit(data2)
+data2['labels'] = kmeans.predict(data2)
+data2.head()
+sns.scatterplot(x='pc1', y='pc2', hue='labels', data=data2)
+
+import pandas as pd
+import numpy as np
+import sklearn
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+from sklearn.model_selection import train_test_split
+
+base_src='./drive/MyDrive'
+housing = pd.read_csv(base_src+'/California_Houses.csv')
+housing['Longitude'] = housing['Longitude']*-1
+X = housing[housing.columns.difference(['Median_House_Value'])]
+y = housing[['Median_House_Value']]
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2)
+print(X_train.shape)
+print(X_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+print(housing.shape)
+print(housing.head())
+# target(Price)와 가장 correlated 된 features 를 k개 고르기.
+## f_regresison, SelectKBest 불러오기.
+from sklearn.feature_selection import f_regression, SelectKBest
+## selctor 정의하기.
+selector = SelectKBest(score_func=f_regression, k=5)
+## 학습데이터에 fit_transform
+X_train_selected = selector.fit_transform(X_train, y_train)
+## 테스트 데이터는 transform
+X_test_selected = selector.transform(X_test)
+print(X_train_selected.shape, X_test_selected.shape)
+all_names = X_train.columns
+## selector.get_support()
+selected_mask = selector.get_support()
+## 선택된 특성(변수)들
+selected_names = all_names[selected_mask]
+## 선택되지 않은 특성(변수)들
+unselected_names = all_names[~selected_mask]
+print('Selected names: ', selected_names)
+print('Unselected names: ', unselected_names)
+
+
+import pandas as pd
+import numpy as np
+import sklearn
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
+from sklearn.model_selection import train_test_split
+from sklearn.feature_selection import f_regression
+base_src='./drive/MyDrive'
+housing = pd.read_csv(base_src+'/California_Houses.csv')
+housing['Longitude'] = housing['Longitude']*-1
+X = housing[housing.columns.difference(['Median_House_Value'])]
+y = housing[['Median_House_Value']]
+housing_ind = housing.drop("Median_House_Value",axis=1)
+#print(housing_ind.head())
+value_house=housing.loc[:,['Median_House_Value']]
+#print("Medain Housing Values")
+#print(value_house.head())
+bestfeatures = SelectKBest(score_func=chi2, k=13)
+fit = bestfeatures.fit(housing_ind,value_house)
+dfcolumns = pd.DataFrame(housing_ind.columns)
+dfscores = pd.DataFrame(fit.scores_)
+featureScores = pd.concat([dfcolumns, dfscores],axis=1)
+featureScores.columns = ['Specs','Score']
+print(featureScores.nlargest(5,'Score'))
+
+
+import sklearn
+from sklearn.ensemble import ExtraTreesClassifier
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+base_src='./drive/MyDrive'
+housing = pd.read_csv(base_src+'/California_Houses.csv')
+housing=housing.loc[:3500]
+print(housing)
+housing_ind = housing.drop("Median_House_Value",axis=1)
+housing_ind['Longitude']=housing_ind['Longitude']*-1
+housing_dep = housing["Median_House_Value"]
+value_house=housing.loc[:,['Median_House_Value']]
+model = ExtraTreesClassifier()
+model.fit(housing_ind,value_house.values.ravel())
+print(model.feature_importances_)
+feat_importances = pd.Series(model.feature_importances_, index=housing_ind.columns)
+feat_importances.nlargest(5).plot(kind='barh')
+plt.show()
+
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+base_src='./drive/MyDrive'
+housing = pd.read_csv(base_src+'/California_Houses.csv')
+housing_ind = housing.drop("Median_House_Value",axis=1)
+housing_ind['Longitude']=housing_ind['Longitude']*-1
+housing_dep = housing["Median_House_Value"]
+value_house=housing.loc[:,['Median_House_Value']]
+housing_ind['Median_House_Value']=value_house
+print(housing_ind)
+corrmat = housing_ind.corr() #corr() computes pairwise correlations of features in a Data Frame
+top_corr_features = corrmat.index
+plt.figure(figsize=(13,13))
+#plot the heat map
+g=sns.heatmap(housing_ind[top_corr_features].corr(),annot=True,cmap="RdYlGn")
+print(g)
