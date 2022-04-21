@@ -13,20 +13,16 @@ def omok():
                     nx = x + dx[i]
                     ny = y + dy[i]
                     cnt = 1
-
                     if nx < 0 or ny < 0 or nx >= n or ny >= n:
                         continue
-
                     while 0 <= nx < n and 0 <= ny < n and arr[x][y] == arr[nx][ny]:
                         cnt += 1
-
                         if cnt == 5:
                             if 0 <= nx + dx[i] < n and 0 <= ny + dy[i] < n and arr[nx][ny] == arr[nx + dx[i]][ny + dy[i]]:    # 육목 판정 1
                                 break
                             if 0 <= x - dx[i] < n and 0 <= y - dy[i] < n and arr[x][y] == arr[x - dx[i]][y - dy[i]]:    # 육목 판정 2
                                 break
                             return arr[x][y], x+1, y+1    # 육목이 아닌 오목이면 return
-
                         nx += dx[i]
                         ny += dy[i]
     return 0, -1, -1    # 승부가 나지 않을 때

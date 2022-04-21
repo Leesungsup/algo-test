@@ -1,5 +1,4 @@
 from collections import deque
-
 v,n=map(int,input().split())
 ma=[[] for _ in range(v+1)]
 indegree = [0] * (v + 1)
