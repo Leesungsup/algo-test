@@ -32,7 +32,7 @@ for i in range(h):
         for k in range(m):
             if board[i][j][k] == 1:
                 q.append((i, j, k))
-            else:
+            elif board[i][j][k]==0:
                 di=True
 if not di:
     print(0)
