@@ -4,7 +4,6 @@ import sys
 def solution(y,x):
     dy = [1, 0, -1, 0]
     dx = [0, 1, 0, -1]
-
     st = [(y,x,1)]
     visited[y][x] = True
     while st:
