@@ -1047,3 +1047,89 @@ plt.figure(figsize=(13,13))
 #plot the heat map
 g=sns.heatmap(housing_ind[top_corr_features].corr(),annot=True,cmap="RdYlGn")
 print(g)
+
+data = pd.DataFrame({"no_insects":["True","True","True","False","True","True","True","True","True","False"],
+                     "no_dead":["True","True","False","True","True","True","False","False","True","False"],
+                     "no_wilting":["True","True","True","True","True","True","False","True","True","True"],
+                     "no_diseases":["True","True","False","True","True","True","False","False","True","True"],
+                     "tree_health":["Good","Good","Poor","Good","Good","Good","Poor","Poor","Good","Poor"]},
+                    columns=["no_insects","no_dead","no_wilting","no_diseases","tree_health"])
+# 기술 속성(descriptive features)
+features = data[["no_insects","no_dead","no_wilting","no_diseases"]]
+# 대상 속성(target feature)
+target = data["tree_health"]
+print(data)
+
+# 엔트로피
+def entropy(target_col):
+    elements, counts = np.unique(target_col, return_counts = True)
+    entropy = -np.sum([(counts[i]/np.sum(counts))*np.log2(counts[i]/np.sum(counts)) for i in range(len(elements))])
+    return entropy
+
+print('H(x) = ', round(entropy(target), 5))
+
+# 정보이득
+def InfoGain(data,split_attribute_name,target_name):
+    # 전체 엔트로피 계산
+    total_entropy = entropy(data[target_name])
+    print('Entropy(D) = ', round(total_entropy, 5))
+    # 가중 엔트로피 계산
+    vals,counts= np.unique(data[split_attribute_name],return_counts=True)
+    Weighted_Entropy = np.sum([(counts[i]/np.sum(counts))*
+                               entropy(data.where(data[split_attribute_name]==vals[i]).dropna()[target_name])
+                               for i in range(len(vals))])
+    print('H(', split_attribute_name, ') = ', round(Weighted_Entropy, 5))
+    # 정보이득 계산
+    Information_Gain = total_entropy - Weighted_Entropy
+    return Information_Gain
+print('InfoGain( no_insects ) = ', round(InfoGain(data, "no_insects", "tree_health"), 5), '\n')
+print('InfoGain( no_wilting ) = ', round(InfoGain(data, "no_wilting", "tree_health"), 5), '\n')
+print('InfoGain( no_diseases ) = ', round(InfoGain(data, "no_diseases", "tree_health"), 5))
+
+# ID3 알고리즘
+def ID3(data,originaldata,features,target_attribute_name,parent_node_class = None):
+
+    # 중지기준 정의
+
+    # 1. 대상 속성이 단일값을 가지면: 해당 대상 속성 반환
+    if len(np.unique(data[target_attribute_name])) <= 1:
+        return np.unique(data[target_attribute_name])[0]
+
+    # 2. 데이터가 없을 때: 원본 데이터에서 최대값을 가지는 대상 속성 반환
+    elif len(data)==0:
+        return np.unique(originaldata[target_attribute_name]) \
+            [np.argmax(np.unique(originaldata[target_attribute_name], return_counts=True)[1])]
+
+    # 3. 기술 속성이 없을 때: 부모 노드의 대상 속성 반환
+    elif len(features) ==0:
+        return parent_node_class
+    # 트리 성장
+    else:
+        # 부모노드의 대상 속성 정의(예: Good)
+        parent_node_class = np.unique(data[target_attribute_name]) \
+            [np.argmax(np.unique(data[target_attribute_name], return_counts=True)[1])]
+        # 데이터를 분할할 속성 선택
+        item_values = [InfoGain(data,feature,target_attribute_name) for feature in features]
+        best_feature_index = np.argmax(item_values)
+        best_feature = features[best_feature_index]
+        # 트리 구조 생성
+        tree = {best_feature:{}}
+        # 최대 정보이득을 보인 기술 속성 제외
+        features = [i for i in features if i != best_feature]
+        # 가지 성장
+        for value in np.unique(data[best_feature]):
+            # 데이터 분할. dropna(): 결측값을 가진 행, 열 제거
+            sub_data = data.where(data[best_feature] == value).dropna()
+            # ID3 알고리즘
+            subtree = ID3(sub_data,data,features,target_attribute_name,parent_node_class)
+            tree[best_feature][value] = subtree
+        return(tree)
+# numpy.unique: 고유값 반환
+print('numpy.unique: ', np.unique(data["tree_health"], return_counts = True)[1])
+# numpy.max: 최대값 반환
+print('numpy.max: ', np.max(np.unique(data["tree_health"], return_counts = True)[1]))
+# numpy.argmax: 최대값이 위치한  인덱스 반환
+print('numpy.argmax: ', np.argmax(np.unique(data["tree_health"], return_counts = True)[1]))
+tree = ID3(data, data, ["no_insects","no_wilting","no_diseases"], "tree_health")
+from pprint import pprint
+pprint(tree)
