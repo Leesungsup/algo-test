@@ -1133,3 +1133,42 @@ print('numpy.argmax: ', np.argmax(np.unique(data["tree_health"], return_counts =
 tree = ID3(data, data, ["no_insects","no_wilting","no_diseases"], "tree_health")
 from pprint import pprint
 pprint(tree)
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+#importing dataset
+base_src='./drive/MyDrive'
+tshirt = pd.read_csv(base_src+'/Training Dataset.csv')
+tshirt.head()
+tshirt.describe()
+
+#Creating Training dataset
+dataset = tshirt.iloc[:, 0:2].values
+labels = tshirt.iloc[:, 2].values
+
+#testing data
+new_data=[161,61]
+
+def knn_algo(new_data, dataset, labels, K):
+    #Calculate the distance between the coordinates of the new data and the coordinates of all known data sets.
+    dists = dataset - new_data
+    dists = np.array(np.sqrt(dists[:,0]**2 + dists[:,1]**2))
+
+    #sort length in ascending order
+    sorted_index = np.argsort(dists)
+
+    #Extract the K classification items from the data with the shortest distance from new data
+    sorted_labels = np.array(labels[sorted_index[:]])
+    K_nearest_labels = sorted_labels[:K]
+
+    #Find the most classification of K data
+    count_dict = {}
+    for label in K_nearest_labels:
+        count_dict[label] = count_dict.get(label,0) + 1
+
+    #return classification
+    _labels, count_labels = np.array(list(count_dict.keys())), np.array(list(count_dict.values()))
+    return _labels[count_labels.argmax()]
+
+knn_algo(new_data,dataset,labels,5)
