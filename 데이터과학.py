@@ -1272,3 +1272,90 @@ def predict(dataset, target, k):
 
 prediction = predict(scaled_df, scaled_df_temp[-1], 3)
 print('\nIt was predicted that a person with \na height {}cm and a weight {}kg would have to wear a T-shirt size {}.'.format(value_to_predict[0],value_to_predict[1],prediction))
+
+import numpy as np
+import pandas as pd
+from matplotlib import pyplot as plt
+from sklearn.model_selection import KFold
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import train_test_split
+
+# Uploads data
+base_src='./drive/MyDrive'
+df = pd.read_csv(base_src+"/mnist_train.csv")
+df.head()
+
+
+# Splitting our dataset into two parts
+data=df.values
+X=data[:40,1:]
+Y=data[:40,0]
+X = pd.DataFrame(X)
+Y = pd.DataFrame(Y)
+print(data.shape)
+print(X)
+print(Y)
+
+X_train, X_test, y_train, y_test = train_test_split(X,Y,test_size=0.2)
+
+kfold=KFold(n_splits=5, shuffle=True, random_state=0)
+
+#Visualizing training data
+def drawImg(sample):
+    img=sample.reshape((28,28))
+    plt.imshow(img,cmap='gray')
+    plt.show()
+
+# define the parameter values that should be searched
+k_range = list(range(1, 10))
+p=[1,2]
+# create a parameter grid: map the parameter names to the values that should be searched
+param_grid = dict(n_neighbors=k_range,p=p)
+
+# instantiate model
+knn = KNeighborsClassifier(n_neighbors=5)
+
+#Create new KNN object
+knn_2 = KNeighborsClassifier()
+#Use GridSearch
+grid = GridSearchCV(knn_2, param_grid, cv=10)
+
+pipeline = Pipeline([
+    ('knn', KNeighborsClassifier())
+])
+
+param_grid = {
+    "knn__n_neighbors":range(1,11),
+    "knn__p":[1,2]
+}
+
+gs = GridSearchCV(pipeline,
+                  param_grid=param_grid,
+                  cv=5)
+#gs.fit(X_train,Y_train)
+best_model = grid.fit(X,Y.values.ravel())
+#enumerate splits
+for train,test in kfold.split(X):
+    X_train=X.iloc[train]
+    Y_train=Y.iloc[train]
+    X_test=X.iloc[test]
+    Y_test=Y.iloc[test]
+    X_train=X_train.values
+    Y_train=Y_train.values
+    X_test=X_test.values
+    Y_test=Y_test.values
+    drawImg(X_train[3])
+    #X_test=X_test[:50]   # Taking the first 50 rows from X_test
+    #Y_test=Y_test[:50]   # Taking the first 50 rows from Y_test
+    base_model=knn.fit(X_train, Y_train)
+
+
+#calculate_accuracy
+print("Label:",base_model.predict(X_test) )
+print("Score : ",base_model.score(X_test, Y_test))
+
+#calculate_accuracy
+print("Label:",best_model.predict(X_test) )
+print("Score : ",best_model.score(X_test, Y_test))
