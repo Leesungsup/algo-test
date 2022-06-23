@@ -1,3 +1,8 @@
+
+
+
+
+
 def binary(number):
     con=''
     while number // 2 >= 1:
