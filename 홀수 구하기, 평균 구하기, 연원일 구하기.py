@@ -54,3 +54,16 @@ for test_case in range(1, T + 1):
     else:
         print("#{} -1".format(test_case))
     # ///////////////////////////////////////////////////////////////////////////////////
+T=int(input())
+d1=T//1000
+T=T%1000
+d2=T//100
+T=T%100
+d3=T//10
+d4=T%10
+print(d1+d2+d3+d4)
+
+T=int(input())
+arr=list(map(int,input().split()))
+arr.sort()
+print(arr[T//2])
