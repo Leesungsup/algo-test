@@ -71,6 +71,7 @@ class Block():
         return hashlib.sha256(str(self.id).encode() + str(self.data).encode() + str(self.timestamp).encode() + str(self.previousHash).encode()).hexdigest()[:40]
 
 class BlockChain:
+
     def __init__(self):
         self.chain = []
         self.current_transactions = []
@@ -97,10 +98,17 @@ class BlockChain:
                 return False
             i += 1
         return True
+
     def istransactionValid(self):
-        i=0
-        while(i<len(self.chain.data)):
-            print(self.chain.data[hashlib.sha256(hex(i).encode()).hexdigest()[:40]])
+        i=1
+        while(i<len(self.chain[0].data)):
+            print(hashlib.sha256(hex(i-1).encode()).hexdigest()[:40])
+            print(self.chain[i].data[hashlib.sha256(hex(i).encode()).hexdigest()[:40]]["previoustransaction"])
+            if(hashlib.sha256(hex(i-1).encode()).hexdigest()[:40] != self.chain[i].data[hashlib.sha256(hex(i).encode()).hexdigest()[:40]]["previoustransaction"]):
+                return False
+            i+=1
+        return True
+
     def pow(self, last_proof):
         proof = 0
         print(last_proof)
@@ -130,4 +138,6 @@ print(my_dict['hash'])
 last_hash = my_dict['hash']
 proof = newblockchain.pow(last_hash)
 print(proof)
+print("===========================================")
+print(newblockchain.istransactionValid())
 print(f"{end - start:.5f} sec")
