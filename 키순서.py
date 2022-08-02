@@ -1,5 +1,5 @@
 T=int(input())
-for test_case in range(1,T+1)
+for test_case in range(1,T+1):
     answer=0
     win={}
     lose={}
@@ -26,4 +26,3 @@ for test_case in range(1,T+1)
         if len(win[i])+len(lose[i])==n-1:
             answer+=1
     print("#{} {}".format(test_case,answer))
-    return answer
