@@ -18,3 +18,20 @@ for test_case in range(1,T+1):
             else:
                 count+=1
     print("#{} {}".format(test_case,min))
+T = int(input())
+
+def top(idx, height):
+    global min_height
+    if B <= height < min_height:
+        min_height = height
+    if idx == N:
+        return
+    top(idx+1, height)
+    top(idx+1, height + height_lst[idx])
+
+for test_case in range(1, T+1):
+    N, B = map(int, input().split())
+    height_lst = list(map(int, input().split()))
+    min_height = 200000
+    top(0, 0)
+    print('#{} {}'.format(test_case, min_height - B))
