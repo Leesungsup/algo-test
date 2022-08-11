@@ -26,6 +26,6 @@ for test_case in range(1,11):
             else:
                 stack.append(a+b)
         else:
-            stack.append(i)
+            stack.append(int(i))
     answer=stack.pop()
     print("#{} {}".format(test_case,answer))
