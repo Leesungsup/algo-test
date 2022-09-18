@@ -1,3 +1,18 @@
+w, h = map(int, input().split())
+p, q = map(int, input().split())
+t = int(input())
+a = (p + t) // w
+b = (q + t) // h
+if a % 2 == 0 :
+    p = (p + t) % w
+else :
+    p = w - (p + t) % w
+if b % 2 == 0 :
+    q = (q + t) % h
+else :
+    q = h - (q + t) % h
+print(p, q)
+
 w,h=map(int,input().split())
 p,q=map(int,input().split())
 t=int(input())
