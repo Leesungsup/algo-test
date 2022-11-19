@@ -63,3 +63,11 @@ def solution(money):
     for i in range(2,len(money)):
         dp1[i]=max(dp1[i-1],dp[i-2]+money[i])
     return max(max(dp),max(dp1))
+def solution(coins, change):
+    dp = [999999] * (change + 1)
+    dp[0] = 0
+    for i in range(len(coins)):
+        for j in range(1, change):
+            dp[j] = min(dp[j], dp[j - coins[i]])
+
+    return dp[change]
