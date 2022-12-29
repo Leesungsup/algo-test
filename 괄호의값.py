@@ -5,6 +5,7 @@ s=list(input())
 a=0
 sum=0
 for i in range(len(s)):
+    print(arr)
     if s[i]==')':
         a=0
         if len(arr)==0:
