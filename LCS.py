@@ -1,8 +1,8 @@
 import sys
-
+input=sys.stdin.readline
 sys.setrecursionlimit(3000)
-a = sys.stdin.readline().strip()
-b = sys.stdin.readline().strip()
+a = input().strip()
+b = input().strip()
 lcs = [[0 for i in range(len(a)+1)] for j in range(len(b)+1)]
 for i in range(1, len(a)+1):
     for j in range(1, len(b)+1):
