@@ -19,10 +19,10 @@ for i in range(test_num):
     isValied = True
     v,e = map(int ,input().split())
     visited = [False] * (v+1)
-    adjacent = [[]for _ in range(v+1)]
+    adjacent = [[] for _ in range(v+1)]
     team = [0] * (v+1)
     for j in range(e):
-        p ,q = map(int ,input().split())
+        p,q = map(int ,input().split())
         adjacent[p].append(q)
         adjacent[q].append(p)
     for j in range(1,v+1):
