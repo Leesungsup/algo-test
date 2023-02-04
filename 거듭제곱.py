@@ -1,5 +1,18 @@
 import sys
-MOD = int(1e9+7)
+input=sys.stdin.readline
+def square(x,n,c):
+    if n == 1:
+        return x
+    else:
+        k = square(x,n//2,c)
+        if n%2==0:
+            return (k*k) % c
+        else:
+            return (k*k*x)%c
+
+
+a,b,c = map(int,input().split())
+print(square(a,b,c)%c)
 
 def square(x,n):
     if n == 1:
