@@ -1,27 +1,27 @@
-import math,sys
-input = sys.stdin.readline
-
-n,c = map(int,input().split())
-arr = [int(input()) for i in range(n)]
+import sys
+input=sys.stdin.readline
+n,c=map(int,input().split())
+arr=[]
+for i in range(n):
+    arr.append(int(input()))
 arr.sort()
-start = 1
-end=arr[n-1] - arr[0]
-
-if c == 2:
-    print(arr[n-1] - arr[0])
+left=1
+right=arr[n-1]-arr[0]
+if c==2:
+    print(arr[n-1]-arr[0])
 else:
-    while(start < end):
-        mid = (start + end)//2
-        count = 1
-        ts = arr[0]
-        # 마지막으로 설치된 공유기의 위치
+    while left<right:
+        mid=(left+right)//2
+        count=1
+        s=arr[0]
         for i in range(n):
-            if arr[i] - ts >= mid:
+            if arr[i]-s>=mid:
                 count+=1
-                ts = arr[i]
-        if count >= c:
-            answer = mid
-            start = mid + 1
-        elif count < c:
-            end = mid
+                s=arr[i]
+        if count>=c:
+            print(count)
+            answer=mid
+            left=mid+1
+        elif count<c:
+            right=mid
     print(answer)
