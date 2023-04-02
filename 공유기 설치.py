@@ -19,7 +19,6 @@ else:
                 count+=1
                 s=arr[i]
         if count>=c:
-            print(count)
             answer=mid
             left=mid+1
         elif count<c:
