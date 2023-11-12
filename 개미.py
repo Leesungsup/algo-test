@@ -51,14 +51,14 @@ t=int(input())
 dx=1
 dy=1
 for i in range(t):
-    if p==w:
-        dx=-1
-    else:
-        dx=1
-    if q==h:
-        dy=-1
-    else:
-        dy=-1
+    if p + dx > w or p + dx < 0:
+        dx = -dx
+    if q + dy > h or q + dy < 0:
+        dy = -dy
     p+=dx
     q+=dy
+    #print(s,"p : ",p,"q : ",q)
+    if a==p and b==q:
+        break
 print(p,q)
+
