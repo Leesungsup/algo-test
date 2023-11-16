@@ -1,3 +1,27 @@
+answer=0
+def is_check(depth):
+    for i in range(depth):
+        if row[i]==row[depth] or abs(row[i]-row[depth]) == abs(depth-i):
+            return False
+    return True
+def n_queen(depth):
+    global answer
+    if n==depth:
+        answer+=1
+        return
+    else:
+        for i in range(n):
+            row[depth]=i
+            if is_check(depth):
+                n_queen(depth+1)
+
+n=int(input())
+row=[0]*n
+n_queen(0)
+print(answer)
+
+
+
 arr=[[]*12 for _ in range(12)]
 print(arr)
 def able(x,y):
